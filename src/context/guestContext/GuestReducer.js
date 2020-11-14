@@ -1,0 +1,82 @@
+import {
+  TOGGLE_FILTER,
+  SEARCH_GUEST,
+  CLEAR_SEARCH,
+  ADD_GUEST,
+  REMOVE_GUEST,
+  UPDATE_GUEST,
+  EDIT_GUEST,
+  CLEAR_EDIT,
+  GET_GUEST,
+  GUESTS_ERROR,
+} from "../Types";
+
+export default (state, { type, payload }) => {
+  switch (type) {
+    case GET_GUEST: {
+      return {
+        ...state,
+        guests: payload,
+      };
+    }
+    case ADD_GUEST:
+      return {
+        ...state,
+        guests: [payload, ...state.guests],
+      };
+
+    case REMOVE_GUEST:
+      return {
+        ...state,
+        guests: state.guests.filter((guest) => guest._id !== payload),
+      };
+
+    case UPDATE_GUEST:
+      return {
+        ...state,
+        guests: state.guests.map((guest) =>
+          guest._id === payload._id ? payload : guest
+        ),
+      };
+
+    case EDIT_GUEST:
+      return {
+        ...state,
+        editAble: payload,
+      };
+
+    case CLEAR_EDIT:
+      return {
+        ...state,
+        editAble: null,
+      };
+
+    case TOGGLE_FILTER:
+      return {
+        ...state,
+        filterGuest: !state.filterGuest,
+      };
+
+    case SEARCH_GUEST:
+      const reg = new RegExp(`${payload}`, "gi");
+      return {
+        ...state,
+        search: state.guests.filter((guest) => guest.name.match(reg)),
+      };
+
+    case GUESTS_ERROR:
+      return {
+        ...state,
+        guests: [],
+        errors: payload,
+      };
+
+    case CLEAR_SEARCH:
+      return {
+        ...state,
+        state: null,
+      };
+    default:
+      return state;
+  }
+};
